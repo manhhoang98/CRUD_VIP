@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/create" method="post" th:object="${product}" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td><input th:field="*{name}"></td>
+            <td><input name="imgFile" placeholder="nhập img" type="file"></td>
+            <td><input th:field="*{status}"></td>
+            <td>
+                <select name="idCategory">
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+                </select>
+            </td>
+            <td>
+                <button type="submit">Create</button>
+            </td>
+        </tr>
+        <tr>
+            <td style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td></tr>
+    </table>
+</form>
+
+</body>
+</html>
