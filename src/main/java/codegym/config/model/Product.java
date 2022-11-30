@@ -4,15 +4,15 @@ package codegym.config.model;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
+
+import javax.validation.constraints.Size;
 
 @Entity
 public class Product {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
-    @NonNull
-    @Pattern(regexp = "^[A-Z][a-z]{4,48}@$", message = "min 6 max 50, batdau A - ketthuc @")
+    @Size(min = 1, max = 25, message = "max 25 min 1")
     private String name;
     private String img;
     private Boolean status;

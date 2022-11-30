@@ -4,12 +4,108 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Varela+Round);
+    html {
+        box-sizing: border-box;
+    }
+
+    *, *:before, *:after {
+        box-sizing: inherit;
+    }
+
+    html {
+        background: #ffffff;
+        overflow-y: scroll;
+    }
+
+    body {
+        position: relative;
+        font: 1em/1.6 "Varela Round", Arial, sans-serif;
+        color: #000000;
+        font-weight: 400;
+        max-width: 25em;
+        padding: 1em;
+        margin: 10% auto;
+    }
+
+    h2 {
+        font-weight: 400;
+    }
+
+    .filupp > input[type=file] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    .filupp {
+        position: relative;
+        background: #ffffff;
+        display: block;
+        padding: 1em;
+        font-size: 1em;
+        width: 100%;
+        height: 3.5em;
+        color: #000000;
+        cursor: pointer;
+        box-shadow: 0 1px 3px #4b4b4b;
+    }
+
+    .filupp:before {
+        content: "";
+        position: absolute;
+        top: 1.5em;
+        right: 0.75em;
+        width: 2em;
+        height: 1.25em;
+        border: 3px solid #dd4040;
+        border-top: 0;
+        text-align: center;
+    }
+
+    .filupp:after {
+        content: "➜";
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        position: absolute;
+        top: 0.65em;
+        right: 0.45em;
+        font-size: 2em;
+        color: #dd4040;
+        line-height: 0;
+    }
+
+    .filupp-file-name {
+        width: 75%;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+    }
+</style>
 <body>
 <form action="/create" method="post" th:object="${product}" enctype="multipart/form-data">
     <table>
         <tr>
             <td><input th:field="*{name}"></td>
-            <td><input name="imgFile" placeholder="nhập img" type="file"></td>
+            <td>
+                <label  class="filupp">
+                    <span class="filupp-file-name js-value" >Chọn File</span>
+                    <input type="file" name="imgFile" value="1" />
+                </label>
+            </td>
             <td><input th:field="*{status}"></td>
             <td>
                 <select name="idCategory">
@@ -21,9 +117,20 @@
             </td>
         </tr>
         <tr>
-            <td style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td></tr>
+            <td style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td>
+        </tr>
     </table>
 </form>
 
 </body>
 </html>
+<script>
+    $(document).ready(function () {
+        // get the name of uploaded file
+        $('input[type="file"]').change(function () {
+            var value = $("input[type='file']").val();
+            $(".js-value").text(value);
+        });
+    });
+
+</script>

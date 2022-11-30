@@ -3,6 +3,7 @@ package codegym.config.controller;
 import codegym.config.model.Category;
 import codegym.config.model.Product;
 import codegym.config.validate.Validate;
+import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import codegym.config.repository.ICategoryRepo;
 import codegym.config.repository.IProductRepo;
 
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -87,25 +89,37 @@ public class ProductController {
         ModelAndView modelAndView = new ModelAndView("edit");
         Product products = iProductRepo.findById(id).get();
         modelAndView.addObject("product", products);
-        modelAndView.addObject("categories", iCategoryRepo.findAll());
         return modelAndView;
     }
 
+
     @PostMapping ("/edit")
-    public ModelAndView edit(@ModelAttribute Product product, @RequestParam int idCategory ,@RequestParam MultipartFile imgFile1)throws IOException{
+    public ModelAndView edit(@Valid @ModelAttribute Product product,BindingResult bindingResult,@RequestParam String name, @RequestParam int idCategory, @RequestParam MultipartFile imgFile)throws IOException{
+        String ten = iProductRepo.findById(product.getId()).get().getName();
+        if(!ten.equals(name)){
+            validate.validate(product,bindingResult);
+        }
+
         Category category = new Category();
         category.setId(idCategory);
         product.setCategory(category);
         product.setStatus(true);
-        String name = imgFile1.getOriginalFilename();
-        assert name != null;
-        if (!name.equals("") ){
-            FileCopyUtils.copy(imgFile1.getBytes(), new File("C:\\Users\\admin\\Desktop\\Module 4\\CRUD_CSDL\\src\\main\\webapp\\file\\" + name));
-            product.setImg("/" + name);
+
+        String name2 = imgFile.getOriginalFilename();
+        String name1 = iProductRepo.findById(product.getId()).get().getImg();
+        if (name2.equals("") ) {
+            product.setImg(name1);
+        }else {
+            FileCopyUtils.copy(imgFile.getBytes(), new File("C:\\Users\\admin\\Desktop\\Module 4\\CRUD_CSDL\\src\\main\\webapp\\file\\" + name2));
+            product.setImg("/" + name2);
+        }
+        if (bindingResult.hasFieldErrors()){
+            return new ModelAndView("/edit") ;
         }
         iProductRepo.save(product);
-        ModelAndView modelAndView = new ModelAndView("redirect:/products");
-        return modelAndView;
+        ModelAndView modelAndView1 = new ModelAndView("redirect:/products");
+        return modelAndView1;
+
     }
 
 }
